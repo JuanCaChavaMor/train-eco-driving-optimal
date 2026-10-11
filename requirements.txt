@@ -1,0 +1,7 @@
+numpy
+scipy
+pandas
+matplotlib
+pyscipopt>=5    # open-source global solver (SCIP)
+gurobipy        # optional: needs a full (e.g. academic) license for N = 520
+pytest

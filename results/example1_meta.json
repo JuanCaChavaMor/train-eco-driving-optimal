@@ -1,0 +1,10 @@
+{
+  "route": "example1",
+  "N": 520,
+  "T": 540.0,
+  "solver": "scip",
+  "status": "gaplimit",
+  "gap": 7.648677401987058e-05,
+  "runtime_s": 480.6,
+  "energy_kWh": 132.97724013654144
+}

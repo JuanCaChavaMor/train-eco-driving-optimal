@@ -1,0 +1,10 @@
+{
+  "route": "level_N520",
+  "N": 520,
+  "T": 600,
+  "solver": "scip",
+  "status": "timelimit",
+  "gap": 0.003633339714626511,
+  "runtime_s": 900.0,
+  "energy_kWh": 135.05170436207274
+}
