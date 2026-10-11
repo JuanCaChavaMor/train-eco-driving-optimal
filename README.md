@@ -52,7 +52,7 @@ The route is 15.02 km with $N = 520$ segments (10 + 10 segments of 1 m at the en
 | | |
 |---|---|
 | Traction energy | **132.98 kWh** (478.7 MJ) |
-| Optimality gap | 0.008 % (SCIP 10, 475 s; the paper reports 4.4 s with Gurobi 11) |
+| Optimality gap | 0.01 % (Gurobi 12, 12.7 s on 32 threads; SCIP 10: 0.008 % in 475 s; the paper reports 4.4 s with Gurobi 11) |
 | $\max_k (z_k - 1/v_k)$ | $10^{-11}$: the latency relaxation is tight |
 | Time from $\sum \Delta s_k / v_k$ | 540.0 s = booked time |
 
@@ -64,16 +64,16 @@ The trip time is tight: 540 s is close to the minimum running time of this discr
 
 This test uses the same route without the downhill section and $T = 600$ s, so the speed limit is not active and the theory of Section 3.6 of Part 1 applies. NLP$_{R3}$ is solved on meshes of 30, 15 and 7.5 m; the indirect method is continuous.
 
-| $N$ | $\Delta s$ | NLP$_{R3}$ [kWh] | SCIP gap | $T_\text{phys}$ [s] | Indirect at $T_\text{phys}$ [kWh] | Difference |
+| $N$ | $\Delta s$ | NLP$_{R3}$ [kWh] | Gap (Gurobi) | $T_\text{phys}$ [s] | Indirect at $T_\text{phys}$ [kWh] | Difference |
 |---|---|---|---|---|---|---|
-| 520 | 30 m | 135.052 | 0.36 % | 590.8 | 135.056 | −0.003 % |
-| 1020 | 15 m | 134.590 | 0.82 % | 591.9 | 134.651 | −0.045 % |
-| 2020 | 7.5 m | 134.446 | 17.7 % | 592.3 | 134.535 | −0.066 % |
+| 520 | 30 m | 135.052 | 0.005 % (4 s) | 590.8 | 135.056 | −0.003 % |
+| 1020 | 15 m | 134.590 | 0.008 % (15 s) | 591.9 | 134.651 | −0.045 % |
+| 2020 | 7.5 m | 134.447 | 0.009 % (13 s) | 592.3 | 134.535 | −0.066 % |
 
 ![Direct vs indirect](figures/direct_vs_indirect.png)
 
 - **Both methods give the same trajectory.** The switching points of the NLP and the indirect solution coincide, and the energies agree to within 0.07 %.
-  - SCIP stops with a gap on the finer meshes (its LP solver stalls). The indirect solution is an independent certificate that these incumbents are optimal; Gurobi closes the gap.
+  - Gurobi certifies all three NLPs as globally optimal within seconds. SCIP finds the same solutions but stalls in its LP solver on the finer meshes (gaps of 0.4–18 % after 25 min); there the indirect solution serves as an independent certificate.
 - **Why $T_\text{phys}$ instead of $T$:** this is the time-bookkeeping note below.
 
 Since one journey takes milliseconds, the indirect method gives the full energy–time trade-off almost for free:
@@ -123,7 +123,7 @@ python scripts/compare_indirect.py --solver gurobi   # re-solve the three NLPs
 python scripts/pitfall_mccormick.py --solver scip
 ```
 
-The pip version of Gurobi comes with a size-limited license, which is too small for $N = 520$. SCIP (`pyscipopt`) is the open-source alternative; the stored results in `results/` were computed with SCIP 10.
+The pip version of Gurobi comes with a size-limited license, which is too small for $N = 520$. SCIP (`pyscipopt`) is the open-source alternative. The stored results in `results/` were computed with Gurobi 12 (academic license).
 
 ## Future work
 

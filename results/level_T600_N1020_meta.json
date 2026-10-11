@@ -1,10 +1,10 @@
 {
   "route": "level_N1020",
   "N": 1020,
-  "T": 600,
-  "solver": "scip",
-  "status": "timelimit",
-  "gap": 0.008225964599912794,
-  "runtime_s": 1522.9,
-  "energy_kWh": 134.58994446785823
+  "T": 600.0,
+  "solver": "gurobi",
+  "status": "optimal",
+  "gap": 8.22661949772696e-05,
+  "runtime_s": 15.0,
+  "energy_kWh": 134.5899466059269
 }
