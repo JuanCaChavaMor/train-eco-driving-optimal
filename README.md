@@ -11,6 +11,8 @@ This is the offline part of my project *Online planning of train eco-driving wit
   <img src="figures/example1.png" width="90%" alt="Globally optimal speed and force profiles for Example 1">
 </p>
 
+**Report:** [`report/report.pdf`](report/report.pdf) (LaTeX sources in `report/`; `make -C report figures all` rebuilds figures, tables and PDF from `results/`).
+
 ## Problem
 
 A point-mass train (Table 1 of Xiao et al.: $m = 400$ t, $P_{\max} = 3.6$ MW, $F_{\max} = 240$ kN, Davis resistance $R(v) = 5.84 + 0.4 v + 0.015 v^2$ kN) runs a distance $S$ in a time $T$:
@@ -106,6 +108,7 @@ train-eco-driving-optimal/
 │   ├── compare_indirect.py    # direct vs indirect, energy-time trade-off
 │   └── pitfall_mccormick.py   # note 1
 ├── tests/                     # regression tests (seconds)
+├── report/                    # LaTeX report (report.pdf), tables and figures generated from results/
 ├── results/                   # solutions (CSV) and solver metadata (JSON)
 └── figures/
 ```

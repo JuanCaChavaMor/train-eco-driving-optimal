@@ -19,6 +19,33 @@ plt.rcParams.update({
 })
 
 
+def _save(fig, path):
+    """PNG for the README and a vector PDF (same name) for the report."""
+    from pathlib import Path
+    path = Path(path)
+    fig.savefig(path, dpi=150)
+    fig.savefig(path.with_suffix(".pdf"))
+    plt.close(fig)
+
+
+def plot_mccormick_latency(v_lo, v_hi, path):
+    """Feasible set of (v, z): exact latency z >= 1/v vs. the McCormick outer approximation of v z >= 1."""
+    zL, zU = 1 / v_hi, 1 / v_lo
+    v = np.linspace(v_lo, v_hi, 400)
+    fig, ax = plt.subplots(figsize=(5.2, 3.6), constrained_layout=True)
+    # McCormick: y <= vU z + zL v - vU zL  and  y <= vL z + zU v - vL zU, with y >= 1
+    z_mc = np.maximum((1 - zL * v + v_hi * zL) / v_hi, (1 - zU * v + v_lo * zU) / v_lo)
+    z_mc = np.clip(z_mc, zL, zU)
+    ax.fill_between(v, z_mc, 1 / v, where=1 / v > z_mc, color=C[1], alpha=0.25, lw=0,
+                    label="admitted by McCormick, z < 1/v")
+    ax.plot(v, 1 / v, color=C[0], label="exact: z = 1/v (feasible above)")
+    ax.plot(v, z_mc, color=C[1], lw=1.5, ls="--", label="McCormick lower boundary")
+    ax.set_yscale("log")
+    ax.set_xlabel("speed v [m/s]"); ax.set_ylabel("latency z [s/m]")
+    ax.legend(loc="upper right", fontsize=8)
+    _save(fig, path)
+
+
 def _shade_modes(ax, s, labels):
     """Background bands showing the driving mode of each segment."""
     start = 0
@@ -58,8 +85,7 @@ def plot_solution(sol, path, title=""):
               loc="lower left", ncol=3, fontsize=8)
     if title:
         a1.set_title(title, loc="left", color=INK)
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
+    _save(fig, path)
 
 
 def plot_comparison(profiles, ind_xv, path, title=""):
@@ -73,8 +99,7 @@ def plot_comparison(profiles, ind_xv, path, title=""):
     ax.legend(loc="lower center", ncol=2)
     if title:
         ax.set_title(title, loc="left", color=INK)
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
+    _save(fig, path)
 
 
 def plot_phase_portrait(v, eta, U, V, path):
@@ -90,8 +115,7 @@ def plot_phase_portrait(v, eta, U, V, path):
     ax.text(-0.5, 5, "Coast\n(-1 < eta < 0)", ha="center", color=MUTED, fontsize=8)
     ax.set_xlim(-1.3, 1.2); ax.set_ylim(0, V * 3.6 * 1.12)
     ax.set_xlabel("modified adjoint eta = mu2/v - 1"); ax.set_ylabel("speed [km/h]")
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
+    _save(fig, path)
 
 
 def plot_energy_time(Ts, E, path, marks=()):
@@ -102,8 +126,7 @@ def plot_energy_time(Ts, E, path, marks=()):
         ax.plot([T], [e], "o", color=C[1], ms=7, mec="white", mew=2)
         ax.annotate(lbl, (T, e), xytext=(8, 4), textcoords="offset points", color=INK, fontsize=8)
     ax.set_xlabel("trip time T [s]"); ax.set_ylabel("traction energy [kWh]")
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
+    _save(fig, path)
 
 
 def plot_tangent(lt, V, path):
@@ -120,5 +143,4 @@ def plot_tangent(lt, V, path):
     ax.set_ylim(-0.25 * lt.phi(V), None)
     ax.set_xlabel("speed [km/h]"); ax.set_ylabel("phi [m^2/s^3]")
     ax.legend(loc="upper left")
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
+    _save(fig, path)
